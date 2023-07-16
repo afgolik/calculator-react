@@ -1,5 +1,5 @@
 import styles from './App.module.css'
-import {useState} from "react";
+import { useState } from 'react'
 
 export const App = () => {
 	const buttons = [
@@ -18,24 +18,23 @@ export const App = () => {
 		{ value: '-', isNumber: false, func: subtractCalculation },
 		{ value: '+', isNumber: false, func: sumCalculation },
 		{ value: 'C', isNumber: false, func: clearValue, inMoment: true },
-		{ value: '=', isNumber: false , func: getResult, inMoment: true },
+		{ value: '=', isNumber: false, func: getResult, inMoment: true },
 	]
-	function sumCalculation (firstValue, secondValue){
+	function sumCalculation(firstValue, secondValue) {
 		return String(Number(firstValue) + Number(secondValue))
 	}
-	function subtractCalculation (firstValue, secondValue){
+	function subtractCalculation(firstValue, secondValue) {
 		return String(Number(firstValue) - Number(secondValue))
 	}
-	function multiplyCalculation (firstValue, secondValue){
+	function multiplyCalculation(firstValue, secondValue) {
 		return String(Number(firstValue) * Number(secondValue))
 	}
-	function divideCalculation (firstValue, secondValue){
-		if (secondValue === '0'){
+	function divideCalculation(firstValue, secondValue) {
+		if (secondValue === '0') {
 			setError('Деление на ноль невозможно')
 			return null
 		}
 		return String(Number(firstValue) / Number(secondValue))
-
 	}
 
 	const [firstValue, setFirstValue] = useState('')
@@ -44,11 +43,11 @@ export const App = () => {
 	const displayValue = `${firstValue} ${operator ? operator.value : ''} ${secondValue}`
 	const [result, setResult] = useState('')
 	const [error, setError] = useState('')
-	function getResult(){
+	function getResult() {
 		setError('')
-		if (firstValue && secondValue){
+		if (firstValue && secondValue) {
 			const res = operator.func(firstValue, secondValue)
-			if (res){
+			if (res) {
 				setResult(res)
 			}
 		} else {
@@ -58,7 +57,7 @@ export const App = () => {
 		setOperator(null)
 		setSecondValue('')
 	}
-	function clearValue(){
+	function clearValue() {
 		setFirstValue('')
 		setOperator(null)
 		setSecondValue('')
@@ -67,7 +66,7 @@ export const App = () => {
 	}
 	function onClickButton(button) {
 		if (!button.isNumber) {
-			if (button.value === '='){
+			if (button.value === '=') {
 				getResult()
 			} else if (button.value === 'C') {
 				clearValue()
@@ -77,7 +76,7 @@ export const App = () => {
 				if (result) {
 					setFirstValue(result)
 					setResult('')
-				}else if (secondValue){
+				} else if (secondValue) {
 					setFirstValue(operator.func(firstValue, secondValue))
 					setSecondValue('')
 				}
@@ -86,7 +85,7 @@ export const App = () => {
 		} else {
 			setResult('')
 			setError('')
-			if (operator){
+			if (operator) {
 				setSecondValue(secondValue + button.value)
 			} else {
 				setFirstValue(firstValue + button.value)
@@ -105,7 +104,6 @@ export const App = () => {
 			</button> : false
 		))
 	}
-
 	window.addEventListener('load', () => document.querySelector('.wrapper').focus())
 	function handleKeyDown(e) {
 		document.querySelector('.wrapper').focus()
@@ -115,19 +113,25 @@ export const App = () => {
 			onClickButton(button)
 		}
 	}
-	
+
 	return (
-		<div className={'wrapper ' + styles.wrapper} onKeyDown={handleKeyDown} tabIndex={0}>
+		<div
+			className={'wrapper ' + styles.wrapper}
+			onKeyDown={handleKeyDown}
+			tabIndex={0}
+		>
 			<div className={styles.calculator}>
 				<header className={styles.header}>Calculator</header>
-				<div className={`${styles.display} ${error ? `${styles.error}` : result ? `${styles.result}` : ''}`}>{error ? error : result ? result : displayValue}</div>
+				<div
+					className={`${styles.display} ${
+						error ? `${styles.error}` : result ? `${styles.result}` : ''
+					}`}
+				>
+					{error ? error : result ? result : displayValue}
+				</div>
 				<div className={styles.buttonsBlock}>
-					<div className={styles.buttonsNumber}>
-						{getButton(buttons, true)}
-					</div>
-					<div className={styles.buttonsOther}>
-						{getButton(buttons, false)}
-					</div>
+					<div className={styles.buttonsNumber}>{getButton(buttons, true)}</div>
+					<div className={styles.buttonsOther}>{getButton(buttons, false)}</div>
 				</div>
 			</div>
 		</div>
