@@ -17,8 +17,8 @@ export const App = () => {
 		{ value: '*', isNumber: false, func: multiplyCalculation },
 		{ value: '-', isNumber: false, func: subtractCalculation },
 		{ value: '+', isNumber: false, func: sumCalculation },
-		{ value: 'C', isNumber: false },
-		{ value: '=', isNumber: false },
+		{ value: 'C', isNumber: false, func: clearValue, inMoment: true },
+		{ value: '=', isNumber: false , func: getResult, inMoment: true },
 	]
 	function sumCalculation (firstValue, secondValue){
 		return String(Number(firstValue) + Number(secondValue))
@@ -30,7 +30,12 @@ export const App = () => {
 		return String(Number(firstValue) * Number(secondValue))
 	}
 	function divideCalculation (firstValue, secondValue){
+		if (secondValue === '0'){
+			setError('Деление на ноль невозможно')
+			return null
+		}
 		return String(Number(firstValue) / Number(secondValue))
+
 	}
 
 	const [firstValue, setFirstValue] = useState('')
@@ -40,16 +45,18 @@ export const App = () => {
 	const [result, setResult] = useState('')
 	const [error, setError] = useState('')
 	function getResult(){
+		setError('')
 		if (firstValue && secondValue){
-			setResult(operator.func(firstValue, secondValue))
+			const res = operator.func(firstValue, secondValue)
+			if (res){
+				setResult(res)
+			}
 		} else {
 			setResult('0')
 		}
 		setFirstValue('')
 		setOperator(null)
 		setSecondValue('')
-		setError('')
-		console.log(1)
 	}
 	function clearValue(){
 		setFirstValue('')
@@ -58,11 +65,11 @@ export const App = () => {
 		setResult('')
 		setError('')
 	}
-	function onClickButton(value, isNumber, func) {
-		if (!isNumber) {
-			if (value === '='){
+	function onClickButton(button) {
+		if (!button.isNumber) {
+			if (button.value === '='){
 				getResult()
-			} else if (value === 'C') {
+			} else if (button.value === 'C') {
 				clearValue()
 			} else if (!firstValue && !result) {
 				setError('Сначала введите число')
@@ -71,40 +78,45 @@ export const App = () => {
 					setFirstValue(result)
 					setResult('')
 				}else if (secondValue){
-					getResult()
-					console.log(2)
-					setFirstValue(result)
-					setResult('')
+					setFirstValue(operator.func(firstValue, secondValue))
+					setSecondValue('')
 				}
-				setOperator({value: value, func: func})
+				setOperator(button)
 			}
 		} else {
 			setResult('')
 			setError('')
 			if (operator){
-				setSecondValue(secondValue + value)
+				setSecondValue(secondValue + button.value)
 			} else {
-				setFirstValue(firstValue + value)
+				setFirstValue(firstValue + button.value)
 			}
 		}
 	}
 
-
 	function getButton(buttons, expectedIsNumber) {
-		return buttons.map(({value, isNumber, func}) => (
-			isNumber === expectedIsNumber ? <button
-				onClick={() => onClickButton(value, isNumber, func)}
-				key={value}
+		return buttons.map((button) => (
+			button.isNumber === expectedIsNumber ? <button
+				onClick={() => onClickButton(button)}
+				key={button.value}
 				className={expectedIsNumber ? styles.button : `${styles.buttonOther} ${styles.button}`}
 			>
-				{value}
+				{button.value}
 			</button> : false
 		))
 	}
+
+	document.body.addEventListener('keydown', (e) => {
+		const key = e.key === 'Enter' ? '=' : e.key === 'Delete' ? 'C' : e.key
+		const button = buttons.find((button) => button.value === key)
+		if (button) {
+			onClickButton(button)
+		}
+	})
 	return (
 		<div className={styles.calculator}>
 			<header className={styles.header}>Calculator</header>
-			<div className={error ? `${styles.display} ${styles.error}` : result ? `${styles.display} ${styles.result}` : styles.display}>{error ? error : result ? result : displayValue}</div>
+			<div className={`${styles.display} ${error ? `${styles.error}` : result ? `${styles.result}` : ''}`}>{error ? error : result ? result : displayValue}</div>
 			<div className={styles.buttonsBlock}>
 				<div className={styles.buttonsNumber}>
 					{getButton(buttons, true)}

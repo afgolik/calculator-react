@@ -1,6 +1,5 @@
 .calculator {
     border-radius: 15px;
-    border: 4px solid #363f5d;
     box-shadow: 10px 10px 10px #282c34;
     width: 380px;
     height: 520px;
@@ -52,6 +51,9 @@
     background-color: #333f5d;
     color: antiquewhite;
     }
+.button:hover{
+    box-shadow: 0 0 30px black;
+}
 .buttonOther{
 
     border: 2px solid #cc964e;
