@@ -106,23 +106,26 @@ export const App = () => {
 		))
 	}
 
-	document.body.addEventListener('keydown', (e) => {
+	function handleKeyDown(e) {
 		const key = e.key === 'Enter' ? '=' : e.key === 'Delete' ? 'C' : e.key
 		const button = buttons.find((button) => button.value === key)
 		if (button) {
 			onClickButton(button)
 		}
-	})
+	}
+	
 	return (
-		<div className={styles.calculator}>
-			<header className={styles.header}>Calculator</header>
-			<div className={`${styles.display} ${error ? `${styles.error}` : result ? `${styles.result}` : ''}`}>{error ? error : result ? result : displayValue}</div>
-			<div className={styles.buttonsBlock}>
-				<div className={styles.buttonsNumber}>
-					{getButton(buttons, true)}
-				</div>
-				<div className={styles.buttonsOther}>
-					{getButton(buttons, false)}
+		<div className={styles.wrapper} onKeyDown={handleKeyDown} tabIndex={0}>
+			<div className={styles.calculator}>
+				<header className={styles.header}>Calculator</header>
+				<div className={`${styles.display} ${error ? `${styles.error}` : result ? `${styles.result}` : ''}`}>{error ? error : result ? result : displayValue}</div>
+				<div className={styles.buttonsBlock}>
+					<div className={styles.buttonsNumber}>
+						{getButton(buttons, true)}
+					</div>
+					<div className={styles.buttonsOther}>
+						{getButton(buttons, false)}
+					</div>
 				</div>
 			</div>
 		</div>
